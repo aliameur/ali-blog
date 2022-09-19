@@ -8,10 +8,10 @@ from datetime import date
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
-from flask_login import UserMixin, login_user, LoginManager, login_required, current_user, logout_user
+from flask_login import UserMixin, login_user, LoginManager, current_user, logout_user
 from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
-from flask_wtf import FlaskForm
+import smtplib
 
 load_dotenv()
 
@@ -148,8 +148,23 @@ def about():
     return render_template("about.html")
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["get", "POST"])
 def contact():
+    if request.method == "POST":
+        with smtplib.SMTP() as connection:
+            connection.starttls()
+            server_email = os.getenv('EMAIL')
+            server_pass = os.getenv('PASSWORD')
+            admin_email = os.getenv('ADMIN_EMAIL')
+            connection.login(user=server_email, password=server_pass)
+            connection.sendmail(from_addr=server_email,
+                                to_addrs=admin_email,
+                                msg="Subject: New message from blog\n\n"
+                                    f"Name: {request.form['name']}"
+                                    f"Email: {request.form['email']}"
+                                    f"Phone: {request.form['phone']}"
+                                    f"Message: {request.form['message']}")
+        return redirect(url_for('get_all_posts'))
     return render_template("contact.html")
 
 
