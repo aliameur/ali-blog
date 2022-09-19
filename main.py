@@ -151,7 +151,7 @@ def about():
 @app.route("/contact", methods=["get", "POST"])
 def contact():
     if request.method == "POST":
-        with smtplib.SMTP() as connection:
+        with smtplib.SMTP("smtp.gmail.com", 587, timeout=120) as connection:
             connection.starttls()
             server_email = os.getenv('EMAIL')
             server_pass = os.getenv('PASSWORD')
@@ -160,9 +160,9 @@ def contact():
             connection.sendmail(from_addr=server_email,
                                 to_addrs=admin_email,
                                 msg="Subject: New message from blog\n\n"
-                                    f"Name: {request.form['name']}"
-                                    f"Email: {request.form['email']}"
-                                    f"Phone: {request.form['phone']}"
+                                    f"Name: {request.form['name']}\n"
+                                    f"Email: {request.form['email']}\n"
+                                    f"Phone: {request.form['phone']}\n"
                                     f"Message: {request.form['message']}")
         return redirect(url_for('get_all_posts'))
     return render_template("contact.html")
