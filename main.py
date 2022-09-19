@@ -1,4 +1,5 @@
 import os
+from dotenv import load_dotenv
 from functools import wraps
 from flask import Flask, render_template, redirect, url_for, flash, request, abort
 from flask_bootstrap import Bootstrap
@@ -12,8 +13,10 @@ from forms import CreatePostForm, RegisterForm, LoginForm, CommentForm
 from flask_gravatar import Gravatar
 from flask_wtf import FlaskForm
 
+load_dotenv()
+
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('ALL_SECRET_KEY')
+app.config['SECRET_KEY'] = os.getenv('APP_SECRET_KEY')
 ckeditor = CKEditor(app)
 Bootstrap(app)
 gravatar = Gravatar(app)
