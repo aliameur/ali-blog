@@ -66,6 +66,9 @@ class Comment(db.Model):
     parent_post_id = db.Column(db.Integer, db.ForeignKey("blog_posts.id"))
 
 
+db.create_all()
+
+
 def admin_only(f):
     @wraps(f)
     def wrapper(*args, **kwargs):
