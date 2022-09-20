@@ -78,6 +78,7 @@ def admin_only(f):
             return f(*args, **kwargs)
     return wrapper
 
+db.create_all()
 
 @login_manager.user_loader
 def load_user(user_id):
